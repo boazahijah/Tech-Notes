@@ -1,0 +1,56 @@
+db.createUser(
+{
+	user: "chordappuser01",
+
+	pwd: "boaz@Ahijah01",
+
+	roles:[{role: "userAdmin" , db:"chordsapp"}]});
+	
+pm2 start "mongod --name mongodb"
+
+sudo systemctl restart mongodb
+
+
+
+mongo -u chordappuser01 -p boaz@Ahijah01 139.59.12.180/chordsapp
+
+db.createUser(
+  {
+    user: "chordsappuser",
+    pwd: "boaz@Ahijah01",
+    roles: [ { role: "userAdminAnyDatabase", db: "chordsapp" } ]
+  }
+)
+
+
+pm2 start "mongod --auth --bind_ip 139.59.12.180 --port 57017 --dbpath /data/db"
+
+
+
+mongorestore --host 139.59.12.180:57017 --db chordsapp --verbose "/prd/apps/dumps/intiialdump/chordsapp"
+
+mongo --host 139.59.12.180:57017
+
+sudo systemctl restart mongodb
+
+mongodump --host="139.59.12.180:57017" -o /prd/apps/dumps
+
+
+
+---------------------------
+ionic cordova build --release android
+
+keytool -genkey -v -keystore chordsandsongs-release-key.keystore -alias chordsandsongs -keyalg RSA -keysize 2048 -validity 10000
+
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore chordsandsongs-release-key.keystore app-release-unsigned.apk chordsandsongs
+
+zipalign -v 4 app-release-unsigned.apk chordsandsongs.apk
+
+---------------
+keytool -genkey -v -keystore tamilguitarchords.keystore -alias tamilguitarchords -keyalg RSA -keysize 2048 -validity 10000
+
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore tamilguitarchords.keystore app-release-unsigned.apk tamilguitarchords
+
+zipalign -v 4 app-release-unsigned.apk tamilguitarchords.apk
